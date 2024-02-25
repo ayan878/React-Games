@@ -1,42 +1,58 @@
+import { useState } from "react";
+import Header from "./components/Header";
+import Main from "./components/Main";
+
+const randomNumber = Math.floor(Math.random() * 20) + 1;
 function App() {
+  const [inputValue, setInputValue] = useState(0);
+  const [guessNumber, setGuessNumber] = useState(false);
+  const [message, setMessage] = useState("Start guessing...");
+  const [bgColor, setBgColor] = useState("#222");
+  const [highscore, setHighscore] = useState(0);
+  const [score, setScore] = useState(20);
+
+  console.log(randomNumber);
+
+  const handleChange = (event) => {
+    setInputValue(event.target.value);
+  };
+
+  function handleCheck() {
+    if (randomNumber === parseInt(inputValue, 10)) {
+      setGuessNumber(!guessNumber);
+      setMessage("🎉 Correct number!");
+      setBgColor("#60b347");
+      setHighscore(highscore < score ? score : highscore);
+      console.log(guessNumber);
+    } else {
+      setScore(score - 1);
+    }
+  }
+    function handleAgain() {
+      setInputValue(0);
+      setBgColor("#222");
+      setGuessNumber(false);
+      setMessage("Guessing number...");
+      setScore(20);
+    }
   return (
-    <div>
-      <Header />
-      <Main />
+    <div style={{ backgroundColor: bgColor }}>
+      <Header
+        randomNumber={randomNumber}
+        handleCheck={handleCheck}
+        guessNumber={guessNumber}
+        handleAgain={handleAgain}
+      />
+      <Main
+        inputValue={inputValue}
+        handleChange={handleChange}
+        handleCheck={handleCheck}
+        message={message}
+        score={score}
+        highscore={highscore}
+      />
     </div>
   );
 }
 
 export default App;
-
-function Header() {
-  return (
-    <header>
-      <h1>Guess My Number!</h1>
-      <p className="between">(Between 1 to 20)</p>
-      <button className="btn again">Again!</button>
-      <div className="number">?</div>
-    </header>
-  );
-}
-
-function Main() {
-  
-  return (
-    <main>
-      <section className="left">
-        <input type="number" className="guess" />
-        <button className="btn check">Check!</button>
-      </section>
-      <section className="right">
-        <p className="message">Start guessing...</p>
-        <p className="label-score">
-          Score:<span className="score">20</span>
-        </p>
-        <p className="label-highscore">
-          🎖️Highscore<span className="highscore">0</span>
-        </p>
-      </section>
-    </main>
-  );
-}
