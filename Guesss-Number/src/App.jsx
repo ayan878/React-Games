@@ -18,7 +18,13 @@ function App() {
   };
 
   function handleCheck() {
-    if (randomNumber === parseInt(inputValue, 10)) {
+   if (randomNumber > inputValue) {
+         setMessage("📉 Low number");
+       }
+    else if  (randomNumber < inputValue) {
+         setMessage("📈 High number");
+       } 
+   else if (randomNumber === parseInt(inputValue, 10)) {
       setGuessNumber(!guessNumber);
       setMessage("🎉 Correct number!");
       setBgColor("#60b347");
@@ -28,13 +34,14 @@ function App() {
       setScore(score - 1);
     }
   }
-    function handleAgain() {
-      setInputValue(0);
-      setBgColor("#222");
-      setGuessNumber(false);
-      setMessage("Guessing number...");
-      setScore(20);
-    }
+ 
+  function handleAgain() {
+    setInputValue(0);
+    setBgColor("#222");
+    setGuessNumber(false);
+    setMessage("Guessing number...");
+    setScore(20);
+  }
   return (
     <div style={{ backgroundColor: bgColor }}>
       <Header
