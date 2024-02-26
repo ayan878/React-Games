@@ -1,61 +1,39 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import Header from "./components/Header";
 import Main from "./components/Main";
 
-const randomNumber = Math.floor(Math.random() * 20) + 1;
-function App() {
-  const [inputValue, setInputValue] = useState(0);
-  const [guessNumber, setGuessNumber] = useState(false);
-  const [message, setMessage] = useState("Start guessing...");
-  const [bgColor, setBgColor] = useState("#222");
-  const [highscore, setHighscore] = useState(0);
-  const [score, setScore] = useState(20);
+import gameReducer, { initialState } from "./gameReducer";
 
-const [state, dispatch] = useReducer(reducer, initialState);
+function App() {
+  const [state, dispatch] = useReducer(gameReducer, initialState);
+
   const handleChange = (event) => {
-    setInputValue(event.target.value);
+    dispatch({ type: "input", value: Number(event.target.value) });
   };
 
-  function handleCheck() {
-    if (score === 0) {
-      setMessage("💥you lost the game");
-    } else if (randomNumber > inputValue) {
-      setScore(score - 1);
-      setMessage("📉 Too low ");
-    } else if (randomNumber < inputValue) {
-      setScore(score - 1);
-      setMessage("📈 Too high");
-    } else if (randomNumber === parseInt(inputValue, 10)) {
-      setGuessNumber(!guessNumber);
-      setMessage("🎉 Correct number!");
-      setBgColor("#60b347");
-      setHighscore(highscore < score ? score : highscore);
-      console.log(guessNumber);
-    }
-  }
+  const handleCheck = () => {
+    dispatch({ type: "check", bgColor: "#60b347" });
+  };
 
-  function handleAgain() {
-    setInputValue(0);
-    setBgColor("#222");
-    setGuessNumber(false);
-    setMessage("Guessing number...");
-    setScore(20);
-  }
+  const handleAgain = () => {
+    dispatch({ type: "reset" });
+  };
+
   return (
-    <div style={{ backgroundColor: bgColor }}>
+    <div style={{ backgroundColor: state.bgColor }}>
       <Header
-        randomNumber={randomNumber}
+        randomNumber={state.randomNumber}
         handleCheck={handleCheck}
-        guessNumber={guessNumber}
+        guessNumber={state.guessNumber}
         handleAgain={handleAgain}
       />
       <Main
-        inputValue={inputValue}
+        inputValue={state.inputValue}
         handleChange={handleChange}
         handleCheck={handleCheck}
-        message={message}
-        score={score}
-        highscore={highscore}
+        message={state.message}
+        score={state.score}
+        highscore={state.highscore}
       />
     </div>
   );
