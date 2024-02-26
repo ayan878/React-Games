@@ -11,30 +11,29 @@ function App() {
   const [highscore, setHighscore] = useState(0);
   const [score, setScore] = useState(20);
 
-  console.log(randomNumber);
-
+const [state, dispatch] = useReducer(reducer, initialState);
   const handleChange = (event) => {
     setInputValue(event.target.value);
   };
 
   function handleCheck() {
-   if (randomNumber > inputValue) {
-         setMessage("📉 Low number");
-       }
-    else if  (randomNumber < inputValue) {
-         setMessage("📈 High number");
-       } 
-   else if (randomNumber === parseInt(inputValue, 10)) {
+    if (score === 0) {
+      setMessage("💥you lost the game");
+    } else if (randomNumber > inputValue) {
+      setScore(score - 1);
+      setMessage("📉 Too low ");
+    } else if (randomNumber < inputValue) {
+      setScore(score - 1);
+      setMessage("📈 Too high");
+    } else if (randomNumber === parseInt(inputValue, 10)) {
       setGuessNumber(!guessNumber);
       setMessage("🎉 Correct number!");
       setBgColor("#60b347");
       setHighscore(highscore < score ? score : highscore);
       console.log(guessNumber);
-    } else {
-      setScore(score - 1);
     }
   }
- 
+
   function handleAgain() {
     setInputValue(0);
     setBgColor("#222");
