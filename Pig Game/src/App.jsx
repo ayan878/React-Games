@@ -4,11 +4,11 @@ import RollDiceButton from "./components/RollDiceButton";
 
 function App() {
   const [players, setPlayers] = useState([
-    { name: "Player 1", score: 0, curScore: 0 },
-    { name: "Player 2", score: 0, curScore: 0 },
+    { name: "Player 1", score: 0 },
+    { name: "Player 2", score: 0 },
   ]);
 
-  // const [curScore, setCurScore] = useState(0);
+  const [curScore, setCurScore] = useState(0);
   const [activePlayerIndex, setActivePlayerIndex] = useState(0);
 
   return (
@@ -19,7 +19,7 @@ function App() {
             key={index}
             playerName={player.name}
             score={player.score}
-            curScore={player.curScore}
+            curScore={curScore}
             isActive={activePlayerIndex === index}
             setPlayerName={(newName) => {
               const updatedPlayers = [...players];
@@ -29,7 +29,7 @@ function App() {
           />
         ))}
         <RollDiceButton
-          players={players}
+          players={players} 
           setPlayers={setPlayers}
           curScore={curScore}
           setCurScore={setCurScore}
