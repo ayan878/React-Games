@@ -33,7 +33,7 @@ main {
   position: absolute;
   width: 7rem;
   height: 7rem;
-  top: 40%;
+  top: 44%;
   left: 50%;
   transform: translate(-50%, -50%); /* Center the element */
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3);
@@ -41,7 +41,7 @@ main {
 
 .btn {
   position: absolute;
-  width:fit-content;
+  width: fit-content;
   height: 40px;
   left: 50%;
   transform: translate(-50%, -50%);
@@ -89,12 +89,17 @@ main {
 }
 .name {
   position: relative;
-  font-size: 4rem;
+  font-size: 3rem;
   text-transform: uppercase;
   letter-spacing: 1px;
   word-spacing: 2px;
   font-weight: 300;
   margin-bottom: 1rem;
+  border: none;
+  outline: none;
+  background-color: transparent;
+  text-align: center;
+  color: #333; 
 }
 
 .score {
@@ -127,4 +132,14 @@ main {
   padding: 2rem;
   text-align: center;
   transition: all 0.75s;
+}
+.current-label {
+  text-transform: uppercase;
+  margin-bottom: 1rem;
+  font-size: 1.7rem;
+  color: #ddd;
+}
+
+.current-score {
+  font-size: 3.5rem;
 }

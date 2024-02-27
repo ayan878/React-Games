@@ -1,20 +1,29 @@
-import React from 'react'
+import { useState } from "react";
 
-function Player() {
+function Player({score,curScore,setPlayerName,playerName}) {
+  // const [playerName, setPlayerName] = useState("Player");
+
+  function handlePlayerName(e) {
+    setPlayerName(e.target.value);
+  }
+
   return (
     <section className="player player--0 player--active">
-      <h2 className="name" id="name--0">
-        Player 1
-      </h2>
-      <p className="score score--0">43</p>
-      <div className="current">
-        <p current-label>Current</p>
+      <input
+        type="text"
+        className="name"
+        value={playerName}
+        onChange={handlePlayerName}
+      />
+      <p className="score score--0">{score}</p>
+      <div className="current" >
+        <p className="current-label">Current</p>
         <p className="current-score" id="current--0">
-          0
+          {curScore}
         </p>
       </div>
     </section>
   );
 }
 
-export default Player
+export default Player;
