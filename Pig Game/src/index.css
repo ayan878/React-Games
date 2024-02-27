@@ -77,8 +77,12 @@ main {
   text-decoration: none;
 }
 .player {
+  border-top-left-radius: 8px;
+  border-bottom-left-radius: 8px;
+
+  height: 400px;;
   font-size: large;
-  margin-top: 32px;
+  /* margin-top: 32px; */
   justify-content: space-between;
   flex: 50%;
   padding: 4rem;
@@ -109,19 +113,19 @@ main {
   margin-bottom: auto;
 }
 
-/* .player--active {
+.player--active {
   background-color: rgba(255, 255, 255, 0.4);
-} */
-/* .player--active .name {
+} 
+.player--active .name {
   font-weight: 700;
-} */
-/* .player--active .score {
+} 
+.player--active .score {
   font-weight: 400;
-} */
+} 
 
-/* .player--active .current {
+.player--active .current {
   opacity: 1;
-} */
+}
 .current {
   background-color: #c7365f;
   box-shadow: 0 0 20px 0 rgba(0, 0, 0, 0.3);

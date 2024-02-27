@@ -1,23 +1,22 @@
-import { useState } from "react";
+import React from "react";
 
-function Player({score,curScore,setPlayerName,playerName}) {
-  // const [playerName, setPlayerName] = useState("Player");
-
-  function handlePlayerName(e) {
+function Player({ score, curScore, playerName, setPlayerName, isActive }) {
+  const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
-  }
+  };
 
   return (
-    <section className="player player--0 player--active">
+    <section className={`player ${isActive ? "player--active" : ""}`}>
       <input
         type="text"
         className="name"
         value={playerName}
-        onChange={handlePlayerName}
+        onChange={handlePlayerNameChange}
       />
       <p className="score score--0">{score}</p>
-      <div className="current" >
+      <div className="current">
         <p className="current-label">Current</p>
+
         <p className="current-score" id="current--0">
           {curScore}
         </p>
