@@ -41,7 +41,7 @@ function App() {
           setActivePlayerIndex={setActivePlayerIndex}
         />
       </main>
-      {winner && <Winner />}
+      {winner && <Winner winnerName={winner.name} />}
     </>
   );
 }
