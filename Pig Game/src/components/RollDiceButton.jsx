@@ -1,4 +1,4 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import dice1 from "../assets/dice-1.png";
 import dice2 from "../assets/dice-2.png";
 import dice3 from "../assets/dice-3.png";
@@ -11,8 +11,6 @@ const diceImages = [dice1, dice2, dice3, dice4, dice5, dice6];
 function RollDiceButton({
   players,
   setPlayers,
-  curScore,
-  setCurScore,
   activePlayerIndex,
   setActivePlayerIndex,
 }) {
@@ -27,44 +25,61 @@ function RollDiceButton({
     const diceValue = getRandomDice();
     setCurrentImage(diceImages[diceValue]);
     setShowDice(true);
-    setCurScore(diceValue + 1);
 
-    // If the dice value is 1, switch to the next player
     if (diceValue + 1 === 1) {
+      // If the dice value is 1, switch to the next player
       const nextPlayerIndex =
         activePlayerIndex === players.length - 1 ? 0 : activePlayerIndex + 1;
       setActivePlayerIndex(nextPlayerIndex);
     } else {
-      // Update the score for the active player if the dice value is not 1
+      // If the dice value is not 1, update the score and curScore of the active player
       setPlayers((prevPlayers) => {
-        const updatedPlayers = [...prevPlayers];
-        updatedPlayers[activePlayerIndex].score += diceValue + 1;
-        return updatedPlayers;
+        return prevPlayers.map((player, index) => {
+          if (index === activePlayerIndex) {
+            return {
+              ...player,
+              curScore: diceValue + 1,
+              score: player.score + diceValue + 1,
+            };
+          } else {
+            return player;
+          }
+        });
       });
     }
   };
 
   const handleHold = () => {
+    // Update the score of the active player and reset curScore to 0
     setPlayers((prevPlayers) => {
-      const updatedPlayers = [...prevPlayers];
-      updatedPlayers[activePlayerIndex].score += curScore;
-      return updatedPlayers;
+      return prevPlayers.map((player, index) => {
+        if (index === activePlayerIndex) {
+          return {
+            ...player,
+            score: player.score + player.curScore,
+            curScore: 0,
+          };
+        } else {
+          return player;
+        }
+      });
     });
-    setCurScore(0);
   };
-const handleNew = () => {
-  setShowDice(false);
-  const initialPlayers = players.map((player,index) => ({
-    ...player,
-    name: player.name.startsWith("Player")
-      ? player.name
-      : `Player ${index+1}`,
-    score: 0,
-  }));
-  setActivePlayerIndex(0)
-  setPlayers(initialPlayers);
-  setCurScore(0);
-};
+
+  const handleNew = () => {
+    // Reset all scores and curScores to 0 for a new game
+    const initialPlayers = players.map((player, index) => ({
+      ...player,
+      name: player.name.startsWith("Player")
+        ? player.name
+        : `Player ${index + 1}`,
+      score: 0,
+      curScore: 0,
+    }));
+    setActivePlayerIndex(0);
+    setPlayers(initialPlayers);
+    setShowDice(false);
+  };
 
   return (
     <>

@@ -1,6 +1,7 @@
 import React from "react";
 
 function Player({ score, curScore, playerName, setPlayerName, isActive }) {
+  
   const handlePlayerNameChange = (e) => {
     setPlayerName(e.target.value);
   };
@@ -13,13 +14,10 @@ function Player({ score, curScore, playerName, setPlayerName, isActive }) {
         value={playerName}
         onChange={handlePlayerNameChange}
       />
-      <p className="score score--0">{score}</p>
+      <p className="score">{score}</p>
       <div className="current">
         <p className="current-label">Current</p>
-
-        <p className="current-score" id="current--0">
-          {curScore}
-        </p>
+        <p className="current-score">{curScore}</p>
       </div>
     </section>
   );
