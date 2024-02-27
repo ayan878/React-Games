@@ -9,13 +9,13 @@ import dice6 from "../assets/dice-6.png";
 const diceImages = [dice1, dice2, dice3, dice4, dice5, dice6];
 
 function RollDiceButton({
-  score,
   setScore,
   curScore,
   setCurScore,
   setPlayerName,
 }) {
   const [currentImage, setCurrentImage] = useState(dice6);
+  const [showDice, setShowDice] = useState(false);
 
   const getRandomDice = () => {
     const randomIndex = Math.floor(Math.random() * diceImages.length);
@@ -26,6 +26,7 @@ function RollDiceButton({
     // const randomDiceImage = getRandomDice();
     const diceValue = getRandomDice();
     setCurrentImage(diceImages[diceValue]);
+    setShowDice(true);
     setCurScore(diceValue + 1);
     setScore((prevScore) => prevScore + curScore);
     console.log("Curent", curScore);
@@ -33,18 +34,20 @@ function RollDiceButton({
 
   function handleHold() {
     setScore((prevScore) => prevScore + curScore);
-    console.log(score);
     setCurScore(0);
   }
 
   function handleNew() {
+    setShowDice(false);
     setPlayerName("Player");
     setScore(0);
     setCurScore(0);
   }
   return (
     <>
-      <img src={currentImage} alt="Playing dice" className="dice" />
+      {showDice && (
+        <img src={currentImage} alt="Playing dice" className="dice" />
+      )}
       <button className="btn btn--new" onClick={handleNew}>
         🔄 New game
       </button>
