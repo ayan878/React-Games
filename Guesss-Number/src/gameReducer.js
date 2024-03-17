@@ -16,7 +16,7 @@ export const initialState = {
 function reducer(state, action) {
   switch (action.type) {
     case "reset":
-      return { ...initialState };
+      return { ...initialState,randomNumber:Math.floor(Math.random() * 20) + 1 };
 
     case "check":
       // Check if score is already 0
