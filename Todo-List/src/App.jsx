@@ -5,7 +5,8 @@ function App() {
   const [todo, setTodo] = useState("");
   const [desc, setDesc] = useState("");
   const [todos, setTodos] = useState([]);
-  const [showTodo, setShowTodo] = useState(false);
+  const [completedTodos, setCompletedTodos] = useState([]);
+  const [showTodo, setShowTodo] = useState(true);
 
   const onChangeTodo = (e) => {
     setTodo(e.target.value);
@@ -17,14 +18,35 @@ function App() {
 
   const handleAdd = () => {
     if (todo && desc) {
-      setTodos([...todos, { title: todo, description: desc }]);
+      setTodos([
+        ...todos,
+        { title: todo, description: desc },
+      ]);
       setTodo("");
       setDesc("");
     }
   };
 
-  const handleTodo = () => {
-    setShowTodo(true);
+  const handleComplete = (index) => {
+    const newTodos = todos.filter((todo, i) => i !== index);
+    const completedTodo = todos.find((todo, i) => i === index);
+    setTodos(newTodos);
+    setCompletedTodos([...completedTodos, completedTodo]);
+  };
+
+  const handleDelete = (index, isCompleted) => {
+    if (isCompleted) {
+      setCompletedTodos(completedTodos.filter((todo, i) => i !== index));
+    } else {
+      setTodos(todos.filter((todo, i) => i !== index));
+    }
+  };
+
+  const handleUncomplete = (index) => {
+    const newCompletedTodos = completedTodos.filter((todo, i) => i !== index);
+    const uncompletedTodo = completedTodos.find((todo, i) => i === index);
+    setCompletedTodos(newCompletedTodos);
+    setTodos([...todos, uncompletedTodo]);
   };
 
   return (
@@ -32,7 +54,7 @@ function App() {
       <h1 className="text-3xl text-white font-bold p-8 flex justify-center items-center">
         My Todos
       </h1>
-      <div className="bg-zinc-800 gap-4 p-6 md:h-fit w-fit">
+      <div className="bg-zinc-800 gap-4 p-6 md:h-44 w-fit">
         <div className="flex flex-col gap-4 border-b items-center border-gray-600 pb-4 sm:w-auto sm:flex-row sm:items-start">
           <div>
             <h3 className="text-white font-semibold">Title:</h3>
@@ -59,38 +81,91 @@ function App() {
             Add
           </button>
         </div>
-        <div className="mt-4">
+        <div className="mt-4 flex gap-2">
           <button
-            className="bg-green-700 p-2 text-white font-semibold"
-            onClick={handleTodo}
+            className={`p-2 text-white font-semibold ${
+              showTodo ? "bg-green-700" : "bg-zinc-600"
+            }`}
+            onClick={() => setShowTodo(true)}
           >
             To Do
           </button>
-          <button className="bg-zinc-600 p-2 text-white font-semibold">
+          <button
+            className={`p-2 text-white font-semibold ${
+              !showTodo ? "bg-green-700" : "bg-zinc-600"
+            }`}
+            onClick={() => setShowTodo(false)}
+          >
             Completed
           </button>
         </div>
-        {showTodo && <TodoList todos={todos} />}
       </div>
+      {showTodo ? (
+        <TodoList
+          todos={todos}
+          handleComplete={handleComplete}
+          handleDelete={(index) => handleDelete(index, false)}
+        />
+      ) : (
+        <TodoListCompleted
+          todos={completedTodos}
+          handleUncomplete={handleUncomplete}
+          handleDelete={(index) => handleDelete(index, true)}
+        />
+      )}
     </div>
   );
 }
 
-function TodoList({ todos }) {
+function TodoList({ todos, handleComplete, handleDelete }) {
   return (
     <ul className="w-full max-w-md mt-6 shadow-lg">
       {todos.map((todo, index) => (
         <li
           key={index}
-          className="bg-zinc-900 p-4 mb-4 rounded flex justify-between items-center"
+          className="bg-zinc-800 p-4 mb-4 rounded flex justify-between items-center"
         >
           <div>
             <h1 className="text-2xl font-bold text-white">{todo.title}</h1>
             <h2 className="text-lg text-gray-400">{todo.description}</h2>
           </div>
           <div className="flex gap-2">
-            <Trash className="text-red-500 cursor-pointer" />
-            <CircleCheck className="text-green-500 cursor-pointer" />
+            <Trash
+              className="text-red-500 cursor-pointer"
+              onClick={() => handleDelete(index)}
+            />
+            <CircleCheck
+              className="text-green-500 cursor-pointer"
+              onClick={() => handleComplete(index)}
+            />
+          </div>
+        </li>
+      ))}
+    </ul>
+  );
+}
+
+function TodoListCompleted({ todos, handleUncomplete, handleDelete }) {
+  return (
+    <ul className="w-full max-w-md mt-6">
+      {todos.map((todo, index) => (
+        <li
+          key={index}
+          className="bg-zinc-800 p-4 mb-4 rounded flex justify-between items-center"
+        >
+          <div>
+            <h1 className="text-2xl font-bold text-white">{todo.title}</h1>
+            <h2 className="text-lg text-gray-400">{todo.description}</h2>
+          </div>
+          <div className="flex gap-2">
+            <Trash
+              className="text-red-500 cursor-pointer"
+              onClick={() => handleDelete(index)}
+            />
+            <CircleCheck
+              className="text-green-500 cursor-pointer"
+              onClick={() => handleUncomplete(index)}
+            />
           </div>
         </li>
       ))}
