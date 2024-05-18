@@ -1,52 +1,95 @@
-import { useState } from "react";
+import { useReducer } from "react";
 import { Trash, CircleCheck } from "lucide-react";
 
+const initialState = {
+  title: "",
+  description: "",
+  todos: [],
+  completedTodos: [],
+  showTodo: true,
+};
+
+function reducer(state, action) {
+  switch (action.type) {
+    case "SET_TITLE":
+      return { ...state, title: action.payload };
+    case "SET_DESCRIPTION":
+      return { ...state, description: action.payload };
+    case "ADD_TODO":
+      if (state.title && state.description) {
+        return {
+          ...state,
+          todos: [
+            ...state.todos,
+            { title: state.title, description: state.description },
+          ],
+          title: "",
+          description: "",
+        };
+      }
+      return state;
+    case "COMPLETE_TODO":
+      const newTodos = state.todos.filter((_, i) => i !== action.payload);
+      const completedTodo = state.todos.find((_, i) => i === action.payload);
+      return {
+        ...state,
+        todos: newTodos,
+        completedTodos: [...state.completedTodos, completedTodo],
+      };
+    case "UNCOMPLETE_TODO":
+      const newCompletedTodos = state.completedTodos.filter(
+        (_, i) => i !== action.payload
+      );
+      const uncompletedTodo = state.completedTodos.find(
+        (_, i) => i === action.payload
+      );
+      return {
+        ...state,
+        completedTodos: newCompletedTodos,
+        todos: [...state.todos, uncompletedTodo],
+      };
+    case "DELETE_TODO":
+      return {
+        ...state,
+        todos: state.todos.filter((_, i) => i !== action.payload),
+      };
+    case "DELETE_COMPLETED_TODO":
+      return {
+        ...state,
+        completedTodos: state.completedTodos.filter(
+          (_, i) => i !== action.payload
+        ),
+      };
+    case "SHOW_TODO":
+      return { ...state, showTodo: true };
+    case "SHOW_COMPLETED":
+      return { ...state, showTodo: false };
+    default:
+      return state;
+  }
+}
+
 function App() {
-  const [todo, setTodo] = useState("");
-  const [desc, setDesc] = useState("");
-  const [todos, setTodos] = useState([]);
-  const [completedTodos, setCompletedTodos] = useState([]);
-  const [showTodo, setShowTodo] = useState(true);
-
-  const onChangeTodo = (e) => {
-    setTodo(e.target.value);
-  };
-
-  const onChangeDesc = (e) => {
-    setDesc(e.target.value);
-  };
+  const [state, dispatch] = useReducer(reducer, initialState);
 
   const handleAdd = () => {
-    if (todo && desc) {
-      setTodos([
-        ...todos,
-        { title: todo, description: desc },
-      ]);
-      setTodo("");
-      setDesc("");
-    }
+    dispatch({ type: "ADD_TODO" });
   };
 
   const handleComplete = (index) => {
-    const newTodos = todos.filter((todo, i) => i !== index);
-    const completedTodo = todos.find((todo, i) => i === index);
-    setTodos(newTodos);
-    setCompletedTodos([...completedTodos, completedTodo]);
+    dispatch({ type: "COMPLETE_TODO", payload: index });
+  };
+
+  const handleUncomplete = (index) => {
+    dispatch({ type: "UNCOMPLETE_TODO", payload: index });
   };
 
   const handleDelete = (index, isCompleted) => {
     if (isCompleted) {
-      setCompletedTodos(completedTodos.filter((todo, i) => i !== index));
+      dispatch({ type: "DELETE_COMPLETED_TODO", payload: index });
     } else {
-      setTodos(todos.filter((todo, i) => i !== index));
+      dispatch({ type: "DELETE_TODO", payload: index });
     }
-  };
-
-  const handleUncomplete = (index) => {
-    const newCompletedTodos = completedTodos.filter((todo, i) => i !== index);
-    const uncompletedTodo = completedTodos.find((todo, i) => i === index);
-    setCompletedTodos(newCompletedTodos);
-    setTodos([...todos, uncompletedTodo]);
   };
 
   return (
@@ -55,12 +98,14 @@ function App() {
         My Todos
       </h1>
       <div className="bg-zinc-800 gap-4 p-6 md:h-44 w-fit">
-        <div className="flex flex-col gap-4 border-b items-center border-gray-600 pb-4 sm:w-auto sm:flex-row sm:items-start">
+        <div className="flex flex-col gap-4 border-b items-center border-gray-600 pb-4 sm:w-auto sm:flex-row sm:items-start ">
           <div>
             <h3 className="text-white font-semibold">Title:</h3>
             <input
-              value={todo}
-              onChange={onChangeTodo}
+              value={state.title}
+              onChange={(e) =>
+                dispatch({ type: "SET_TITLE", payload: e.target.value })
+              }
               className="w-72 p-2 placeholder-gray-400"
               placeholder="What's the title of your To Do"
             />
@@ -68,8 +113,10 @@ function App() {
           <div>
             <h3 className="font-semibold text-white">Description:</h3>
             <input
-              value={desc}
-              onChange={onChangeDesc}
+              value={state.description}
+              onChange={(e) =>
+                dispatch({ type: "SET_DESCRIPTION", payload: e.target.value })
+              }
               className="w-72 p-2 placeholder-gray-400"
               placeholder="What's the description of your To Do"
             />
@@ -84,31 +131,31 @@ function App() {
         <div className="mt-4 flex gap-2">
           <button
             className={`p-2 text-white font-semibold ${
-              showTodo ? "bg-green-700" : "bg-zinc-600"
+              state.showTodo ? "bg-green-700" : "bg-zinc-600"
             }`}
-            onClick={() => setShowTodo(true)}
+            onClick={() => dispatch({ type: "SHOW_TODO" })}
           >
             To Do
           </button>
           <button
             className={`p-2 text-white font-semibold ${
-              !showTodo ? "bg-green-700" : "bg-zinc-600"
+              !state.showTodo ? "bg-green-700" : "bg-zinc-600"
             }`}
-            onClick={() => setShowTodo(false)}
+            onClick={() => dispatch({ type: "SHOW_COMPLETED" })}
           >
             Completed
           </button>
         </div>
       </div>
-      {showTodo ? (
+      {state.showTodo ? (
         <TodoList
-          todos={todos}
+          todos={state.todos}
           handleComplete={handleComplete}
           handleDelete={(index) => handleDelete(index, false)}
         />
       ) : (
         <TodoListCompleted
-          todos={completedTodos}
+          todos={state.completedTodos}
           handleUncomplete={handleUncomplete}
           handleDelete={(index) => handleDelete(index, true)}
         />
@@ -132,7 +179,7 @@ function TodoList({ todos, handleComplete, handleDelete }) {
           <div className="flex gap-2">
             <Trash
               className="text-red-500 cursor-pointer"
-              onClick={() => handleDelete(index)}
+              onClick={() => handleDelete(index, false)}
             />
             <CircleCheck
               className="text-green-500 cursor-pointer"
@@ -160,7 +207,7 @@ function TodoListCompleted({ todos, handleUncomplete, handleDelete }) {
           <div className="flex gap-2">
             <Trash
               className="text-red-500 cursor-pointer"
-              onClick={() => handleDelete(index)}
+              onClick={() => handleDelete(index, true)}
             />
             <CircleCheck
               className="text-green-500 cursor-pointer"
