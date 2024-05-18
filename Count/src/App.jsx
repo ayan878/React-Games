@@ -1,9 +1,12 @@
-import React from 'react'
+import Counter from "./Counter";
+import { CounterProvider } from "./CounterContext";
 
 function App() {
   return (
-    <div>App</div>
-  )
+    <CounterProvider>
+      <Counter />
+    </CounterProvider>
+  );
 }
 
-export default App
+export default App;
