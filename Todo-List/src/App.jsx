@@ -98,7 +98,7 @@ function App() {
         My Todos
       </h1>
       <div className="bg-zinc-800 gap-4 p-6 md:h-44 w-fit">
-        <div className="flex flex-col gap-4 border-b items-center border-gray-600 pb-4 sm:w-auto sm:flex-row sm:items-start ">
+        <div className="flex flex-col gap-4 border-b items-center border-gray-600 pb-4 sm:w-auto sm:flex-row sm:items-start">
           <div>
             <h3 className="text-white font-semibold">Title:</h3>
             <input
@@ -208,10 +208,6 @@ function TodoListCompleted({ todos, handleUncomplete, handleDelete }) {
             <Trash
               className="text-red-500 cursor-pointer"
               onClick={() => handleDelete(index, true)}
-            />
-            <CircleCheck
-              className="text-green-500 cursor-pointer"
-              onClick={() => handleUncomplete(index)}
             />
           </div>
         </li>
